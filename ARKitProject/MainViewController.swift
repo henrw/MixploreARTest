@@ -76,7 +76,7 @@ class MainViewController: UIViewController {
 	var isLoadingObject: Bool = false {
 		didSet {
 			DispatchQueue.main.async {
-				self.settingsButton.isEnabled = !self.isLoadingObject
+//				self.settingsButton.isEnabled = !self.isLoadingObject
 				self.addObjectButton.isEnabled = !self.isLoadingObject
 				self.screenshotButton.isEnabled = !self.isLoadingObject
 				self.restartExperienceButton.isEnabled = !self.isLoadingObject
@@ -90,7 +90,7 @@ class MainViewController: UIViewController {
 		// Abort if we are about to load another object to avoid concurrent modifications of the scene.
 		if isLoadingObject { return }
 
-		textManager.cancelScheduledMessage(forType: .contentPlacement)
+//		textManager.cancelScheduledMessage(forType: .contentPlacement)
 
 		let rowHeight = 45
 		let popoverSize = CGSize(width: 250, height: rowHeight * VirtualObjectSelectionViewController.COUNT_OBJECTS)
@@ -112,18 +112,18 @@ class MainViewController: UIViewController {
     func addPlane(node: SCNNode, anchor: ARPlaneAnchor) {
 
 		let pos = SCNVector3.positionFromTransform(anchor.transform)
-		textManager.showDebugMessage("NEW SURFACE DETECTED AT \(pos.friendlyString())")
+//		textManager.showDebugMessage("NEW SURFACE DETECTED AT \(pos.friendlyString())")
 
 		let plane = Plane(anchor, showDebugVisuals)
 
 		planes[anchor] = plane
 		node.addChildNode(plane)
 
-		textManager.cancelScheduledMessage(forType: .planeEstimation)
-		textManager.showMessage("SURFACE DETECTED")
-		if !VirtualObjectsManager.shared.isAVirtualObjectPlaced() {
-			textManager.scheduleMessage("TAP + TO PLACE AN OBJECT", inSeconds: 7.5, messageType: .contentPlacement)
-		}
+//		textManager.cancelScheduledMessage(forType: .planeEstimation)
+//		textManager.showMessage("SURFACE DETECTED")
+//		if !VirtualObjectsManager.shared.isAVirtualObjectPlaced() {
+//			textManager.scheduleMessage("TAP + TO PLACE AN OBJECT", inSeconds: 7.5, messageType: .contentPlacement)
+//		}
 	}
 
 	func restartPlaneDetection() {
@@ -139,7 +139,7 @@ class MainViewController: UIViewController {
 			trackingFallbackTimer = nil
 		}
 
-		textManager.scheduleMessage("FIND A SURFACE TO PLACE AN OBJECT", inSeconds: 7.5, messageType: .planeEstimation)
+//		textManager.scheduleMessage("FIND A SURFACE TO PLACE AN OBJECT", inSeconds: 7.5, messageType: .planeEstimation)
 	}
 
     // MARK: - Focus Square
@@ -151,7 +151,7 @@ class MainViewController: UIViewController {
 		focusSquare = FocusSquare()
 		sceneView.scene.rootNode.addChildNode(focusSquare!)
 
-		textManager.scheduleMessage("TRY MOVING LEFT OR RIGHT", inSeconds: 5.0, messageType: .focusSquare)
+//		textManager.scheduleMessage("TRY MOVING LEFT OR RIGHT", inSeconds: 5.0, messageType: .focusSquare)
     }
 
 	func updateFocusSquare() {
@@ -166,7 +166,7 @@ class MainViewController: UIViewController {
 		let (worldPos, planeAnchor, _) = worldPositionFromScreenPosition(screenCenter, objectPos: focusSquare?.position)
 		if let worldPos = worldPos {
 			focusSquare?.update(for: worldPos, planeAnchor: planeAnchor, camera: self.session.currentFrame?.camera)
-			textManager.cancelScheduledMessage(forType: .focusSquare)
+//			textManager.cancelScheduledMessage(forType: .focusSquare)
 		}
 	}
 
@@ -187,7 +187,7 @@ class MainViewController: UIViewController {
 
     // MARK: - Debug Visualizations
 
-	@IBOutlet var featurePointCountLabel: UILabel!
+//	@IBOutlet var featurePointCountLabel: UILabel!
 
 	func refreshFeaturePoints() {
 		guard showDebugVisuals else {
@@ -199,15 +199,15 @@ class MainViewController: UIViewController {
 		}
 
 		DispatchQueue.main.async {
-			self.featurePointCountLabel.text = "Features: \(cloud.__count)".uppercased()
+//			self.featurePointCountLabel.text = "Features: \(cloud.__count)".uppercased()
 		}
 	}
 
     var showDebugVisuals: Bool = UserDefaults.standard.bool(for: .debugMode) {
         didSet {
-			featurePointCountLabel.isHidden = !showDebugVisuals
-			debugMessageLabel.isHidden = !showDebugVisuals
-			messagePanel.isHidden = !showDebugVisuals
+//			featurePointCountLabel.isHidden = !showDebugVisuals
+//			debugMessageLabel.isHidden = !showDebugVisuals
+//			messagePanel.isHidden = !showDebugVisuals
 			planes.values.forEach { $0.showDebugVisualization(showDebugVisuals) }
 			sceneView.debugOptions = []
 			if showDebugVisuals {
@@ -218,40 +218,42 @@ class MainViewController: UIViewController {
     }
 
     func setupDebug() {
-		messagePanel.layer.cornerRadius = 3.0
-		messagePanel.clipsToBounds = true
+//		messagePanel.layer.cornerRadius = 3.0
+//		messagePanel.clipsToBounds = true
+        return
     }
 
     // MARK: - UI Elements and Actions
 
-	@IBOutlet weak var messagePanel: UIView!
-	@IBOutlet weak var messageLabel: UILabel!
-	@IBOutlet weak var debugMessageLabel: UILabel!
+//	@IBOutlet weak var messagePanel: UIView!
+//	@IBOutlet weak var messageLabel: UILabel!
+//	@IBOutlet weak var debugMessageLabel: UILabel!
 
-	var textManager: TextManager!
+//	var textManager: TextManager!
 
     func setupUIControls() {
-		textManager = TextManager(viewController: self)
-		debugMessageLabel.isHidden = true
-		featurePointCountLabel.text = ""
-		debugMessageLabel.text = ""
-		messageLabel.text = ""
+//		textManager = TextManager(viewController: self)
+//		debugMessageLabel.isHidden = true
+//		featurePointCountLabel.text = ""
+//		debugMessageLabel.text = ""
+//		messageLabel.text = ""
     }
 
 	@IBOutlet weak var restartExperienceButton: UIButton!
 	var restartExperienceButtonIsEnabled = true
 
 	@IBAction func restartExperience(_ sender: Any) {
+        print("test")
 		guard restartExperienceButtonIsEnabled, !isLoadingObject else {
 			return
 		}
-
+        print("restart")
 		DispatchQueue.main.async {
 			self.restartExperienceButtonIsEnabled = false
 
-			self.textManager.cancelAllScheduledMessages()
-			self.textManager.dismissPresentedAlert()
-			self.textManager.showMessage("STARTING A NEW SESSION")
+//			self.textManager.cancelAllScheduledMessages()
+//			self.textManager.dismissPresentedAlert()
+//			self.textManager.showMessage("STARTING A NEW SESSION")
 			self.use3DOFTracking = false
 
 			self.setupFocusSquare()
@@ -270,21 +272,32 @@ class MainViewController: UIViewController {
 	@IBOutlet weak var screenshotButton: UIButton!
 	@IBAction func takeSnapShot() {
 		guard sceneView.session.currentFrame != nil else { return }
-		focusSquare?.isHidden = true
-
-		let imagePlane = SCNPlane(width: sceneView.bounds.width / 6000, height: sceneView.bounds.height / 6000)
-		imagePlane.firstMaterial?.diffuse.contents = sceneView.snapshot()
-		imagePlane.firstMaterial?.lightingModel = .constant
-
-		let planeNode = SCNNode(geometry: imagePlane)
-		sceneView.scene.rootNode.addChildNode(planeNode)
-
-		focusSquare?.isHidden = false
+//		focusSquare?.isHidden = true
+        
+        let snapShot = sceneView.snapshot()
+            
+        UIImageWriteToSavedPhotosAlbum(snapShot, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+//		let imagePlane = SCNPlane(width: sceneView.bounds.width / 6000, height: sceneView.bounds.height / 6000)
+//		imagePlane.firstMaterial?.diffuse.contents = sceneView.snapshot()
+//		imagePlane.firstMaterial?.lightingModel = .constant
+//
+//		let planeNode = SCNNode(geometry: imagePlane)
+//		sceneView.scene.rootNode.addChildNode(planeNode)
+//
+//		focusSquare?.isHidden = false
 	}
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
 
+        if let error = error {
+            print("Error Saving ARKit Scene \(error)")
+        } else {
+            print("ARKit Scene Successfully Saved")
+        }
+    }
 	// MARK: - Settings
 
-	@IBOutlet weak var settingsButton: UIButton!
+//	@IBOutlet weak var settingsButton: UIButton!
 
 	@IBAction func showSettings(_ button: UIButton) {
 		let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -304,8 +317,8 @@ class MainViewController: UIViewController {
 		                                                   height: sceneView.bounds.size.height - 50)
 		self.present(navigationController, animated: true, completion: nil)
 
-		navigationController.popoverPresentationController?.sourceView = settingsButton
-		navigationController.popoverPresentationController?.sourceRect = settingsButton.bounds
+//		navigationController.popoverPresentationController?.sourceView = settingsButton
+//		navigationController.popoverPresentationController?.sourceRect = settingsButton.bounds
 	}
 
     @objc
@@ -331,16 +344,16 @@ class MainViewController: UIViewController {
 	// MARK: - Error handling
 
 	func displayErrorMessage(title: String, message: String, allowRestart: Bool = false) {
-		textManager.blurBackground()
+//		textManager.blurBackground()
 
 		if allowRestart {
 			let restartAction = UIAlertAction(title: "Reset", style: .default) { _ in
-				self.textManager.unblurBackground()
+//				self.textManager.unblurBackground()
 				self.restartExperience(self)
 			}
-			textManager.showAlert(title: title, message: message, actions: [restartAction])
+//			textManager.showAlert(title: title, message: message, actions: [restartAction])
 		} else {
-			textManager.showAlert(title: title, message: message, actions: [])
+//			textManager.showAlert(title: title, message: message, actions: [])
 		}
 	}
 }
@@ -355,11 +368,12 @@ extension MainViewController {
 	}
 
 	func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-		textManager.showTrackingQualityInfo(for: camera.trackingState, autoHide: !self.showDebugVisuals)
+//		textManager.showTrackingQualityInfo(for: camera.trackingState, autoHide: !self.showDebugVisuals)
 
 		switch camera.trackingState {
 		case .notAvailable:
-			textManager.escalateFeedback(for: camera.trackingState, inSeconds: 5.0)
+            break
+//			textManager.escalateFeedback(for: camera.trackingState, inSeconds: 5.0)
 		case .limited:
 			if use3DOFTrackingFallback {
 				// After 10 seconds of limited quality, fall back to 3DOF mode.
@@ -369,10 +383,10 @@ extension MainViewController {
 					self.trackingFallbackTimer = nil
 				})
 			} else {
-				textManager.escalateFeedback(for: camera.trackingState, inSeconds: 10.0)
+//				textManager.escalateFeedback(for: camera.trackingState, inSeconds: 10.0)
 			}
 		case .normal:
-			textManager.cancelScheduledMessage(forType: .trackingStateEscalation)
+//			textManager.cancelScheduledMessage(forType: .trackingStateEscalation)
 			if use3DOFTrackingFallback && trackingFallbackTimer != nil {
 				trackingFallbackTimer!.invalidate()
 				trackingFallbackTimer = nil
@@ -402,16 +416,16 @@ extension MainViewController {
 	}
 
 	func sessionWasInterrupted(_ session: ARSession) {
-		textManager.blurBackground()
-		textManager.showAlert(title: "Session Interrupted",
-		                      message: "The session will be reset after the interruption has ended.")
+//		textManager.blurBackground()
+//		textManager.showAlert(title: "Session Interrupted",
+//		                      message: "The session will be reset after the interruption has ended.")
 	}
 
 	func sessionInterruptionEnded(_ session: ARSession) {
-		textManager.unblurBackground()
+//		textManager.unblurBackground()
 		session.run(sessionConfig, options: [.resetTracking, .removeExistingAnchors])
 		restartExperience(self)
-		textManager.showMessage("RESETTING SESSION")
+//		textManager.showMessage("RESETTING SESSION")
 	}
 }
 
@@ -578,13 +592,13 @@ extension MainViewController {
 
 		let distance = String(format: "%.2f", distanceToUser)
 		let scale = String(format: "%.2f", object.scale.x)
-		textManager.showDebugMessage("Distance: \(distance) m\nRotation: \(angleDegrees)°\nScale: \(scale)x")
+//		textManager.showDebugMessage("Distance: \(distance) m\nRotation: \(angleDegrees)°\nScale: \(scale)x")
 	}
 
 	func moveVirtualObjectToPosition(_ pos: SCNVector3?, _ instantly: Bool, _ filterPosition: Bool) {
 
 		guard let newPosition = pos else {
-			textManager.showMessage("CANNOT PLACE OBJECT\nTry moving left or right.")
+//			textManager.showMessage("CANNOT PLACE OBJECT\nTry moving left or right.")
 			// Reset the content selection in the menu only if the content has not yet been initially placed.
 			if !VirtualObjectsManager.shared.isAVirtualObjectPlaced() {
 				resetVirtualObject()
@@ -761,7 +775,7 @@ extension MainViewController {
 		// Drop the object onto the plane if it is near it.
 		let verticalAllowance: Float = 0.03
 		if objectPos.y > -verticalAllowance && objectPos.y < verticalAllowance {
-			textManager.showDebugMessage("OBJECT MOVED\nSurface detected nearby")
+//			textManager.showDebugMessage("OBJECT MOVED\nSurface detected nearby")
 
 			SCNTransaction.begin()
 			SCNTransaction.animationDuration = 0.5
